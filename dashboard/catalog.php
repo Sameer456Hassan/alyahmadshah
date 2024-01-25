@@ -24,7 +24,7 @@ include("./inc/header.php");
 					include("../backend/config.php");
 
 					// Fetch data from the products table
-					$sql = "SELECT id, title, price, image_path FROM products";
+					$sql = "SELECT * FROM products";
 					$result = $conn->query($sql);
 
 					if ($result->num_rows > 0) {
@@ -33,9 +33,11 @@ include("./inc/header.php");
 							<thead>
 								<tr>
 									<th>ID</th>
-									<th>TITLE</th>
-									<th>PRICE</th>
 									<th>IMAGE</th>
+									<th>TITLE</th>
+									<th>DESCRIPTION</th>
+									<th>PRICE</th>
+									<th>ACTION</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -45,14 +47,45 @@ include("./inc/header.php");
 											<div class="main__table-text"><?php echo $row['id']; ?></div>
 										</td>
 										<td>
+											<div class="main__table-text">
+												<img src="<?php echo $row['image_path']; ?>" alt="Product Image" style="max-width: 150px; max-height: 150px;">
+											</div>
+										</td>
+										<td>
 											<div class="main__table-text"><a href="#"><?php echo $row['title']; ?></a></div>
+										</td>
+										<td>
+											<div class="main__table-text"><?php
+																			$description = $row['description'];
+
+																			// Split the description into an array of words
+																			$words = explode(' ', $description);
+
+																			// Set the maximum number of words per line
+																			$wordsPerLine = 10;
+
+																			// Count the number of words
+																			$wordCount = count($words);
+
+																			// Output the words with line breaks
+																			for ($i = 0; $i < $wordCount; $i++) {
+																				echo $words[$i] . ' ';
+
+																				// Add a line break after every $wordsPerLine words
+																				if (($i + 1) % $wordsPerLine === 0 && $i !== $wordCount - 1) {
+																					echo '<br>';
+																				}
+																			}
+																			?></div>
 										</td>
 										<td>
 											<div class="main__table-text"><?php echo $row['price']; ?></div>
 										</td>
 										<td>
 											<div class="main__table-text">
-												<img src="<?php echo $row['image_path']; ?>" alt="Product Image" style="max-width: 50px; max-height: 50px;">
+												<button class="btn btn-danger mx-2 delete_btn" data-id="<?= $row['id'] ?>"><i class="fa-sharp fa-solid fa-trash"></i></button>
+												<!-- <button class="btn btn-secondary mx-2"><i class="fa-sharp fa-solid fa-edit"></i></button> -->
+
 											</div>
 										</td>
 									</tr>
@@ -102,22 +135,6 @@ include("./inc/header.php");
 	</div>
 </div>
 <!-- end modal delete -->
-
-<!-- JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-
-<script src="js/bootstrap.bundle.min.js"></script>
-<script src="js/jquery.magnific-popup.min.js"></script>
-<script src="js/smooth-scrollbar.js"></script>
-<script src="js/select2.min.js"></script>
-<script src="js/admin.js"></script>
-<script>
-
-	let table = new DataTable('#prod_table');
-</script>
-</body>
-
-<!-- Mirrored from flixtv.volkovdesign.com/admin/catalog.php by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 02 Sep 2023 13:53:09 GMT -->
-
-</html>
+<?php
+require('./inc/footer.php');
+?>

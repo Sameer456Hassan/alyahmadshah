@@ -1,8 +1,7 @@
 <?php
 session_start();
-if($_SESSION['Login'] == 'LOGIN'){
-    header('Location: ./dashboard.php');
-
+if ($_SESSION['Login'] == 'LOGIN') {
+	header('Location: ./dashboard.php');
 }
 ?>
 
@@ -66,70 +65,12 @@ if($_SESSION['Login'] == 'LOGIN'){
 
 							<span class="sign__text">Don't have an account? <a href="signup.html">Sign up!</a></span>
 						</form>
-
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<!-- end sign in -->
-
-	<!-- JS -->
-	<script src="js/bootstrap.bundle.min.js"></script>
-	<script src="js/jquery.magnific-popup.min.js"></script>
-	<script src="js/smooth-scrollbar.js"></script>
-	<script src="js/select2.min.js"></script>
-	<script src="js/admin.js"></script>
-
-	<script>
-		function submitForm() {
-			var email = $("#email").val();
-			var password = $("#password").val();
-
-			// Perform form validation here if needed
-
-			// AJAX request
-			$.ajax({
-				type: "POST",
-				url: "../backend/login.php",
-				data: {
-					email: email,
-					password: password
-				},
-				success: function(response) {
-					// Handle the response from the server
-					if (response === "success") {
-						// Redirect to a new page or perform any other action
-						Swal.fire({
-							icon: 'success',
-							title: 'Login Successful',
-							showConfirmButton: false,
-							timer: 1000
-						}).then(function(e){
-							window.location.href = "./dashboard.php"
-						});
-					} else {
-						// Display an error message
-						Swal.fire({
-							icon: 'error',
-							title: 'Login Failed',
-							text: 'Invalid email or password',
-						});
-					}
-				},
-				error: function() {
-					// Display an error message
-					Swal.fire({
-						icon: 'error',
-						title: 'Oops...',
-						text: 'Something went wrong!',
-					});
-				}
-			});
-		}
-	</script>
-</body>
-
-<!-- Mirrored from flixtv.volkovdesign.com/admin/index.php by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 02 Sep 2023 13:53:09 GMT -->
-
-</html>
+	<?php
+	require('./inc/footer.php');
+	?>

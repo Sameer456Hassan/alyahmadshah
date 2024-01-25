@@ -71,17 +71,15 @@ include("./inc/header.php");
         include('../backend/config.php');
 
         // Fetch all items from the database
-        $result = $conn->query("SELECT * FROM products");
+        $result = $conn->query("SELECT * FROM products ORDER BY id DESC LIMIT 5");
 
         if ($result->num_rows > 0) {
         ?>
-        <div class="dashbox">
+          <div class="dashbox">
             <div class="dashbox__title">
               <h3>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                  <path
-                    d="M12,6a1,1,0,0,0-1,1V17a1,1,0,0,0,2,0V7A1,1,0,0,0,12,6ZM7,12a1,1,0,0,0-1,1v4a1,1,0,0,0,2,0V13A1,1,0,0,0,7,12Zm10-2a1,1,0,0,0-1,1v6a1,1,0,0,0,2,0V11A1,1,0,0,0,17,10Zm2-8H5A3,3,0,0,0,2,5V19a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V5A3,3,0,0,0,19,2Zm1,17a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V5A1,1,0,0,1,5,4H19a1,1,0,0,1,1,1Z"
-                  />
+                  <path d="M12,6a1,1,0,0,0-1,1V17a1,1,0,0,0,2,0V7A1,1,0,0,0,12,6ZM7,12a1,1,0,0,0-1,1v4a1,1,0,0,0,2,0V13A1,1,0,0,0,7,12Zm10-2a1,1,0,0,0-1,1v6a1,1,0,0,0,2,0V11A1,1,0,0,0,17,10Zm2-8H5A3,3,0,0,0,2,5V19a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V5A3,3,0,0,0,19,2Zm1,17a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V5A1,1,0,0,1,5,4H19a1,1,0,0,1,1,1Z" />
                 </svg>
                 Products
               </h3>
@@ -89,9 +87,7 @@ include("./inc/header.php");
               <div class="dashbox__wrap">
                 <a class="dashbox__refresh" href="#">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path
-                      d="M21,11a1,1,0,0,0-1,1,8.05,8.05,0,1,1-2.22-5.5h-2.4a1,1,0,0,0,0,2h4.53a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4.77A10,10,0,1,0,22,12,1,1,0,0,0,21,11Z"
-                    />
+                    <path d="M21,11a1,1,0,0,0-1,1,8.05,8.05,0,1,1-2.22-5.5h-2.4a1,1,0,0,0,0,2h4.53a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4.77A10,10,0,1,0,22,12,1,1,0,0,0,21,11Z" />
                   </svg>
                 </a>
                 <a class="dashbox__more" href="catalog.php">View All</a>
@@ -112,158 +108,180 @@ include("./inc/header.php");
                 <tbody>
                   <?php
 
-          // Output the table rows
-          while ($row = $result->fetch_assoc()) {
-            echo '<tr>
-                <td>
-                  <div class="main__table-text">' . $row['id'] . '</div>
-                </td>
-                <td>
-                  <div class="main__table-text">' . $row['title'] . '</div>
-                </td>
-                <td>
-                  <div class="main__table-text">' . $row['price'] . '</div>
-                </td>
-                <td>
-                  <div class="main__table-text">' . $row['description'] . '</div>
-                </td>
-                <td>
-                  <div class="main__table-text">
-                    <img src="' . $row['image_path'] . '" alt="Product Image" style="max-width: 50px; max-height: 50px;">
-                  </div>
-                </td>
-              </tr>';
-          }
+                  // Output the table rows
+                  while ($row = $result->fetch_assoc()) {
+                  ?><tr>
+                      <td>
+                        <div class="main__table-text"><?= $row['id'] ?></div>
+                      </td>
+                      <td>
+                        <div class="main__table-text"><?= $row['title'] ?></div>
+                      </td>
+                      <td>
+                        <div class="main__table-text"><?= $row['price'] ?></div>
+                      </td>
+                      <td>
+                        <div class="main__table-text"><?php
+                                                      $description = $row['description'];
 
-          // Output the closing tags
-          echo '</tbody>
+                                                      // Split the description into an array of words
+                                                      $words = explode(' ', $description);
+
+                                                      // Set the maximum number of words per line
+                                                      $wordsPerLine = 5;
+
+                                                      // Count the number of words
+                                                      $wordCount = count($words);
+
+                                                      // Output the words with line breaks
+                                                      for ($i = 0; $i < $wordCount; $i++) {
+                                                        echo $words[$i] . ' ';
+
+                                                        // Add a line break after every $wordsPerLine words
+                                                        if (($i + 1) % $wordsPerLine === 0 && $i !== $wordCount - 1) {
+                                                          echo '<br>';
+                                                        }
+                                                      }
+                                                      ?></div>
+                      </td>
+                      <td>
+                        <div class="main__table-text">
+                          <img src="<?= $row['image_path'] ?>" alt="Product Image" style="max-width: 50px; max-height: 50px;">
+                        </div>
+                      </td>
+                    </tr>
+                <?php
+                  }
+
+                  // Output the closing tags
+                  echo '</tbody>
             </table>
           </div>
         </div>';
-        } else {
-          echo "No items found.";
-        }
+                } else {
+                  echo "No items found.";
+                }
 
-        // Close the database connection
-        $conn->close();
-        ?>
+                // Close the database connection
+                $conn->close();
+                ?>
 
-      </div>
-      <!-- end dashbox -->
-
-      <!-- dashbox -->
-      <div class="col-12 col-xl-6">
-        <div class="dashbox">
-          <div class="dashbox__title">
-            <h3>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M10,13H3a1,1,0,0,0-1,1v7a1,1,0,0,0,1,1h7a1,1,0,0,0,1-1V14A1,1,0,0,0,10,13ZM9,20H4V15H9ZM21,2H14a1,1,0,0,0-1,1v7a1,1,0,0,0,1,1h7a1,1,0,0,0,1-1V3A1,1,0,0,0,21,2ZM20,9H15V4h5Zm1,4H14a1,1,0,0,0-1,1v7a1,1,0,0,0,1,1h7a1,1,0,0,0,1-1V14A1,1,0,0,0,21,13Zm-1,7H15V15h5ZM10,2H3A1,1,0,0,0,2,3v7a1,1,0,0,0,1,1h7a1,1,0,0,0,1-1V3A1,1,0,0,0,10,2ZM9,9H4V4H9Z" />
-              </svg>
-              Latest items
-            </h3>
-
-            <div class="dashbox__wrap">
-              <a class="dashbox__refresh" href="#">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                  <path d="M21,11a1,1,0,0,0-1,1,8.05,8.05,0,1,1-2.22-5.5h-2.4a1,1,0,0,0,0,2h4.53a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4.77A10,10,0,1,0,22,12,1,1,0,0,0,21,11Z" />
-                </svg>
-              </a>
-              <a class="dashbox__more" href="catalog.php">View All</a>
             </div>
-          </div>
+            <!-- end dashbox -->
 
-          <div class="dashbox__table-wrap dashbox__table-wrap--2">
-            <table class="main__table main__table--dash">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>TITLE</th>
-                  <th>CATEGORY</th>
-                  <th>STATUS</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <div class="main__table-text">26</div>
-                  </td>
-                  <td>
-                    <div class="main__table-text">
-                      <a href="#">I Dream in Another Language</a>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="main__table-text">Movie</div>
-                  </td>
-                  <td>
-                    <div class="main__table-text main__table-text--green">Visible</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="main__table-text">25</div>
-                  </td>
-                  <td>
-                    <div class="main__table-text"><a href="#">Benched</a></div>
-                  </td>
-                  <td>
-                    <div class="main__table-text">Movie</div>
-                  </td>
-                  <td>
-                    <div class="main__table-text main__table-text--green">Visible</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="main__table-text">24</div>
-                  </td>
-                  <td>
-                    <div class="main__table-text"><a href="#">Whitney</a></div>
-                  </td>
-                  <td>
-                    <div class="main__table-text">TV Show</div>
-                  </td>
-                  <td>
-                    <div class="main__table-text main__table-text--green">Visible</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="main__table-text">23</div>
-                  </td>
-                  <td>
-                    <div class="main__table-text"><a href="#">Blindspotting 2</a></div>
-                  </td>
-                  <td>
-                    <div class="main__table-text">TV Show</div>
-                  </td>
-                  <td>
-                    <div class="main__table-text main__table-text--green">Visible</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="main__table-text">22</div>
-                  </td>
-                  <td>
-                    <div class="main__table-text"><a href="#">Blindspotting</a></div>
-                  </td>
-                  <td>
-                    <div class="main__table-text">TV Show</div>
-                  </td>
-                  <td>
-                    <div class="main__table-text main__table-text--green">Visible</div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <!-- dashbox -->
+            <div class="col-12 col-xl-6">
+              <div class="dashbox">
+                <div class="dashbox__title">
+                  <h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path d="M10,13H3a1,1,0,0,0-1,1v7a1,1,0,0,0,1,1h7a1,1,0,0,0,1-1V14A1,1,0,0,0,10,13ZM9,20H4V15H9ZM21,2H14a1,1,0,0,0-1,1v7a1,1,0,0,0,1,1h7a1,1,0,0,0,1-1V3A1,1,0,0,0,21,2ZM20,9H15V4h5Zm1,4H14a1,1,0,0,0-1,1v7a1,1,0,0,0,1,1h7a1,1,0,0,0,1-1V14A1,1,0,0,0,21,13Zm-1,7H15V15h5ZM10,2H3A1,1,0,0,0,2,3v7a1,1,0,0,0,1,1h7a1,1,0,0,0,1-1V3A1,1,0,0,0,10,2ZM9,9H4V4H9Z" />
+                    </svg>
+                    Latest items
+                  </h3>
+
+                  <div class="dashbox__wrap">
+                    <a class="dashbox__refresh" href="#">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M21,11a1,1,0,0,0-1,1,8.05,8.05,0,1,1-2.22-5.5h-2.4a1,1,0,0,0,0,2h4.53a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4.77A10,10,0,1,0,22,12,1,1,0,0,0,21,11Z" />
+                      </svg>
+                    </a>
+                    <a class="dashbox__more" href="catalog.php">View All</a>
+                  </div>
+                </div>
+
+                <div class="dashbox__table-wrap dashbox__table-wrap--2">
+                  <table class="main__table main__table--dash">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>TITLE</th>
+                        <th>CATEGORY</th>
+                        <th>STATUS</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <div class="main__table-text">26</div>
+                        </td>
+                        <td>
+                          <div class="main__table-text">
+                            <a href="#">I Dream in Another Language</a>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="main__table-text">Movie</div>
+                        </td>
+                        <td>
+                          <div class="main__table-text main__table-text--green">Visible</div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="main__table-text">25</div>
+                        </td>
+                        <td>
+                          <div class="main__table-text"><a href="#">Benched</a></div>
+                        </td>
+                        <td>
+                          <div class="main__table-text">Movie</div>
+                        </td>
+                        <td>
+                          <div class="main__table-text main__table-text--green">Visible</div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="main__table-text">24</div>
+                        </td>
+                        <td>
+                          <div class="main__table-text"><a href="#">Whitney</a></div>
+                        </td>
+                        <td>
+                          <div class="main__table-text">TV Show</div>
+                        </td>
+                        <td>
+                          <div class="main__table-text main__table-text--green">Visible</div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="main__table-text">23</div>
+                        </td>
+                        <td>
+                          <div class="main__table-text"><a href="#">Blindspotting 2</a></div>
+                        </td>
+                        <td>
+                          <div class="main__table-text">TV Show</div>
+                        </td>
+                        <td>
+                          <div class="main__table-text main__table-text--green">Visible</div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="main__table-text">22</div>
+                        </td>
+                        <td>
+                          <div class="main__table-text"><a href="#">Blindspotting</a></div>
+                        </td>
+                        <td>
+                          <div class="main__table-text">TV Show</div>
+                        </td>
+                        <td>
+                          <div class="main__table-text main__table-text--green">Visible</div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <!-- end dashbox -->
+
           </div>
-        </div>
       </div>
-      <!-- end dashbox -->
-
-    </div>
-  </div>
 </main>
 <!-- end main content -->
 
